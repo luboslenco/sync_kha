@@ -12,20 +12,35 @@
 	NSNetService	*netService;
     NSFileHandle	*listeningSocket;
 	bool			serviceStarted;
+
+    NSString        *strData;
+    bool            dataReceived;
 }
 
 -(id) init;
 -(void) toggleSync;
+-(NSString*) getStrData;
+-(bool) getDataReceived;
 
 @end
 
 
 @implementation SyncServiceController
 
+-(NSString*) getStrData {
+    dataReceived = false;
+    return strData;
+}
+
+-(bool) getDataReceived {
+    return dataReceived;
+}
+
 - (id)init 
 {
 	self = [super init];
     serviceStarted=NO;
+    dataReceived = false;
     return self;
 }
 
@@ -96,8 +111,9 @@
 	
     NSData *receivedData = [incomingConnection availableData];
     
-    NSString *strData = [[NSString alloc]initWithData:receivedData encoding:NSUTF8StringEncoding];
-    NSLog(@"%@",strData);
+    strData = [[NSString alloc]initWithData:receivedData encoding:NSUTF8StringEncoding];
+    dataReceived = true;
+    //NSLog(@"%@", strData);
 	
     [incomingConnection closeFile];
 }
@@ -115,4 +131,13 @@ namespace SyncKore {
 	void toggleSync() {
 		[ssc toggleSync];
 	}
+
+    const char* getStrData() {
+        NSString *str = [ssc getStrData];
+        return (const char*)[str UTF8String];
+    }
+
+    bool getDataReceived() {
+        return [ssc getDataReceived];
+    }
 }
