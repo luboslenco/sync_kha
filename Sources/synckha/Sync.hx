@@ -1,6 +1,6 @@
 package synckha;
 
-#if sys_ios
+#if (sys_ios || sys_osx)
 @:headerCode('
 #include <SyncKore.h>
 ')
@@ -8,30 +8,40 @@ package synckha;
 
 class Sync {
 
+	// Receiving data
 	// TODO: use __cpp__
 	#if sys_ios
 	@:functionCode('SyncKore::init();')
-	#end
 	public static function init():Void {
 	}
 
-	#if sys_ios
 	@:functionCode('SyncKore::toggleSync();')
-	#end
 	public static function toggleSync():Void {
 	}
 
-	#if sys_ios
 	@:functionCode('return SyncKore::getStrData();')
-	#end
 	public static function getStrData():cpp.ConstCharStar {
 		return "";
 	}
 
-	#if sys_ios
 	@:functionCode('return SyncKore::getDataReceived();')
-	#end
 	public static function getDataReceived():Bool {
 		return false;
 	}
+	#end
+
+	// Sending data
+	#if sys_osx
+	@:functionCode('SyncKore::init();')
+	public static function init():Void {
+	}
+
+	@:functionCode('SyncKore::discover();')
+	public static function discover():Void {
+	}
+
+	@:functionCode('SyncKore::sync(str);')
+	public static function sync(str:String):Void {
+	}
+	#end
 }
